@@ -1,0 +1,14 @@
+---
+- name: Templating dnsmasq.conf
+  become: yes
+  template:
+    src: "dns_server.conf.j2"
+    dest: "/etc/dnsmasq.conf"
+    backup: yes
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - Testing dnsmasq.conf
+    - Restarting dnsmasq
+

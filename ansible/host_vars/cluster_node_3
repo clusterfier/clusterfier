@@ -1,0 +1,4 @@
+---
+ansible_ssh_host: 192.168.1.13
+wlan0_mac_address: "b8:27:eb:57:03:4c"
+

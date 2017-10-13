@@ -1,0 +1,10 @@
+---
+dns_server_configuration_attributes:
+  - "interface=wlan0"
+  - "listen-address=192.168.1.1"
+  - "bind-interfaces"
+  - "server=8.8.8.8"
+  - "domain-needed"
+  - "bogus-priv"
+  - "dhcp-range=192.168.1.101,192.168.1.110,12h"
+

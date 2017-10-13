@@ -1,0 +1,10 @@
+---
+- name: Testing dnsmasq.conf
+  command: "/usr/sbin/dnsmasq --test --conf-file=/tmp/dnsmasq.conf"
+
+- name: Restarting dnsmasq
+  become: yes
+  service:
+    name: dnsmasq
+    state: restarted
+

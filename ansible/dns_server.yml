@@ -1,0 +1,5 @@
+---
+- hosts: control_machine
+  roles:
+    - dns_server
+
