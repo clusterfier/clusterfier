@@ -1,0 +1,5 @@
+---
+- hosts: cluster_nodes
+  roles:
+    - cluster_node
+

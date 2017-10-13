@@ -1,0 +1,16 @@
+---
+- name: Installing control_machine SSH key
+  lineinfile:
+    path: "/home/pi/.ssh/authorized_keys"
+    line: "{{ hostvars['control_machine'].ssh_public_key }}"
+    create: yes
+
+- name: Templating wpa_supplicant.conf
+  become: yes
+  template:
+    src: "wpa_supplicant.conf.j2"
+    dest: "/etc/wpa_supplicant/wpa_supplicant.conf"
+    owner: root
+    group: root
+    mode: "0600"
+
