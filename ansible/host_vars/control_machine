@@ -14,6 +14,7 @@ apt_packages:
   - name: dirmngr
   - name: ansible
     version: "2.4.0.0-1ppa~trusty"
+  - name: dnsmasq
 git_repositories:
   - repo: "https://github.com/clusterfier/clusterfier.git"
     dest: "~/git_repositories/clusterfier"
