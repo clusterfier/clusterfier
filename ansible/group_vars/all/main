@@ -1,3 +1,10 @@
 ---
 clusterfier_wlan_ssid: clusterfier
+apt_repositories: []
+apt_keys: []
+apt_packages:
+  - name: vim
+  - name: tmux
+  - name: git
+  - name: htop
 
