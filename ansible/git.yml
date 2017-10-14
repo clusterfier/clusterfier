@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+    - name: Managing git repositories
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest|default('~') }}"
+        force: "{{ item.force|default('no') }}"
+      with_items: "{{ git_repositories }}"
+

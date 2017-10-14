@@ -7,4 +7,5 @@ apt_packages:
   - name: tmux
   - name: git
   - name: htop
+git_repositories: []
 
