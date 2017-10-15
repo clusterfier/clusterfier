@@ -1,42 +1,14 @@
 ---
+- import_playbook: preseed.yml
+
 - hosts: all
-
   tasks:
-    - name: Templating preseed file
-      become: yes
-      template:
-        src: "preseed.j2"
-        dest: "/opt/preseed.conf"
-        owner: root
-        group: root
-        mode: "0644"
-      notify:
-        - Validating preseed configuration file
-        - Setting preseed selections
-        - Deleting existing configuration files
-        - Reconfiguring packages
-
-  handlers:
-    - name: Validating preseed configuration file
-      become: yes
-      command: "debconf-set-selections --checkonly /opt/preseed.conf"
-
-    - name: Setting preseed selections
-      become: yes
-      command: "debconf-set-selections /opt/preseed.conf"
-
-    - name: Deleting existing configuration files
+    - name: Creating packages directory
       become: yes
       file:
-        path: "{{ item }}"
-        state: absent
-      with_items:
-        - "/etc/default/locale"
-        - "/etc/default/keyboard"
-        - "/etc/timezone"
-        - "/etc/localtime"
-
-    - name: Reconfiguring packages
-      become: yes
-      command: "dpkg-reconfigure --frontend noninteractive tzdata locales keyboard-configuration"
+        path: "{{ packages_directory }}"
+        state: directory
+        owner: "{{ packages_directory_owner|default('root') }}"
+        group: "{{ packages_directory_group|default('users') }}"
+        mode: "{{ packages_directory_mode|default('0775') }}"
 
