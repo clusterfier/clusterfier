@@ -1,0 +1,42 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Templating preseed file
+      become: yes
+      template:
+        src: "preseed.j2"
+        dest: "/opt/preseed.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Validating preseed configuration file
+        - Setting preseed selections
+        - Deleting existing configuration files
+        - Reconfiguring packages
+
+  handlers:
+    - name: Validating preseed configuration file
+      become: yes
+      command: "debconf-set-selections --checkonly /opt/preseed.conf"
+
+    - name: Setting preseed selections
+      become: yes
+      command: "debconf-set-selections /opt/preseed.conf"
+
+    - name: Deleting existing configuration files
+      become: yes
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/etc/default/locale"
+        - "/etc/default/keyboard"
+        - "/etc/timezone"
+        - "/etc/localtime"
+
+    - name: Reconfiguring packages
+      become: yes
+      command: "dpkg-reconfigure --frontend noninteractive tzdata locales keyboard-configuration"
+
