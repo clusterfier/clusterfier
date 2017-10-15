@@ -1,6 +1,14 @@
 ---
 - hosts: all
   tasks:
+    - name: Managing apt keys
+      become: yes
+      apt_key:
+        id: "{{ item.id }}"
+        keyserver: "{{ item.keyserver|default(default_app_keyserver) }}"
+        state: "{{ item.state|default('present') }}"
+      with_items: "{{ apt_keys }}"
+
     - name: Managing apt repositories
       become: yes
       apt_repository:
@@ -8,14 +16,6 @@
         state: "{{ item.state|default('present') }}"
         update_cache: yes
       with_items: "{{ apt_repositories }}"
-
-    - name: Managing apt keys
-      become: yes
-      apt_key:
-        id: "{{ item.id }}"
-        keyserver: "{{ item.keyserver }}"
-        state: "{{ item.state|default('present') }}"
-      with_items: "{{ apt_keys }}"
 
     - name: Managing apt packages
       become: yes
