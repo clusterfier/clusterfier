@@ -1,0 +1,11 @@
+---
+- name: Reloading systemctl daemon
+  become: yes
+  command: systemctl daemon-reload
+
+- name: Restarting zookeeper
+  become: yes
+  service:
+    name: zookeeper
+    state: restarted
+

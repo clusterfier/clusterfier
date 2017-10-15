@@ -1,0 +1,107 @@
+---
+- name: Creating packages directory
+  become: yes
+  file:
+    path: "{{ packages_directory }}"
+    state: directory
+    owner: "{{ packages_directory_owner|default('root') }}"
+    group: "{{ packages_directory_group|default('users') }}"
+    mode: "{{ packages_directory_mode|default('0775') }}"
+
+- name: Creating zookeeper user and group
+  become: yes
+  user:
+    name: "{{ zookeeper_user }}"
+    createhome: no
+    shell: "{{ zookeeper_user_shell }}"
+    system: yes
+
+- name: Creating ZooKeeper data and log directories
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0755"
+  with_items:
+    - "{{ zookeeper_data_directory }}"
+    - "{{ zookeeper_log_directory }}"
+
+- name: Unarchiving ZooKeeper source tarball
+  become: yes
+  unarchive:
+    src: "{{ zookeeper_package_url }}"
+    dest: "/opt/"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0755"
+    remote_src: yes
+
+- name: Linking versioned ZooKeeper directory
+  become: yes
+  file:
+    src: "{{ zookeeper_versioned_directory }}"
+    path: "{{ zookeeper_directory[:-1] }}"
+    state: link
+    force: yes
+
+- name: Templating ZooKeeper systemd script
+  become: yes
+  template:
+    src: "zookeeper.service.j2"
+    dest: "{{ zookeeper_service_systemd_file_path }}"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0744"
+  notify:
+    - Reloading systemctl daemon
+    - Restarting zookeeper
+
+- name: Templating ZooKeeper configuration file
+  become: yes
+  template:
+    src: "zoo.cfg.j2"
+    dest: "{{ zookeeper_configuration_directory }}zoo.cfg"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0644"
+  notify: Restarting zookeeper
+
+- name: Templating ZooKeeper Java environment file
+  become: yes
+  template:
+    src: "java.env.j2"
+    dest: "{{ zookeeper_java_environment_file_path }}"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0744"
+  notify: Restarting zookeeper
+
+- name: Copying the ZooKeeper node ID file
+  become: yes
+  copy:
+    dest: "{{ zookeeper_data_directory }}myid"
+    owner: "{{ zookeeper_user }}"
+    group: "{{ zookeeper_group }}"
+    mode: "0644"
+    content: "{{ zookeeper_node_id }}"
+  notify: Restarting zookeeper
+
+- name: Flushing handlers
+  meta: flush_handlers
+
+- name: Starting zookeeper
+  become: yes
+  service:
+    name: "{{ zookeeper_service_name }}"
+    state: started
+    enabled: yes
+
+- name: Waiting for ZooKeeper client port to open
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: "{{ zookeeper_client_port }}"
+    connect_timeout: "{{ zookeeper_service_start_connect_timeout }}"
+    timeout: "{{ zookeeper_service_start_timeout }}"
+

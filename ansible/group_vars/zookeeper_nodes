@@ -1,0 +1,13 @@
+---
+apt_keys:
+  - id: "{{ webupd8team_apt_key }}"
+    keyserver: "{{ webupd8team_apt_keyserver }}"
+apt_repositories:
+  - repo: "{{ webupd8team_java_apt_repo }}"
+apt_packages:
+  - name: vim
+  - name: tmux
+  - name: git
+  - name: htop
+  - name: "{{ java_apt_package }}"
+

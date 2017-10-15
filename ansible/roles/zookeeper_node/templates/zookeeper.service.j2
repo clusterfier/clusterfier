@@ -1,0 +1,19 @@
+[Unit]
+Description={{ zookeeper_service_name }}
+After=network.target
+
+[Service]
+Type=forking
+PIDFile={{ zookeeper_pid_file_path }}
+User={{ zookeeper_user }}
+Group={{ zookeeper_group }}
+EnvironmentFile=
+SyslogIdentifier={{ zookeeper_service_name }}
+Restart=on-abort
+ExecStart={{ zookeeper_directory }}bin/zkServer.sh start {{ zookeeper_configuration_file_path }}
+ExecStop={{ zookeeper_directory }}bin/zkServer.sh stop
+ExecRestart={{ zookeeper_directory }}bin/zkServer.sh restart
+WorkingDirectory={{ zookeeper_data_directory }}
+
+[Install]
+WantedBy=multi-user.target

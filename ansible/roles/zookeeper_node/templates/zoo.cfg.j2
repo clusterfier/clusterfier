@@ -1,0 +1,29 @@
+# The number of milliseconds of each tick
+tickTime={{ zookeeper_tick_time }}
+
+# The number of ticks that the initial synchronization phase can take
+initLimit={{ zookeeper_init_limit }}
+
+# The number of ticks that can pass between sending a request and
+# receiving an acknowledgement
+syncLimit={{ zookeeper_sync_limit }}
+
+# The directory where the ZooKeeper snapshot is stored
+dataDir={{ zookeeper_data_directory }}
+
+# The port over which the clients will connect
+clientPort={{ zookeeper_client_port }}
+
+# The maximum number of ZooKeeper client connections
+maxClientCnxns={{ zookeeper_max_client_connections }}
+
+# The number of snapshots to retain in dataDir
+autopurge.snapRetainCount={{ zookeeper_snapshot_retain_count }}
+
+# Purge task interval (in hours)
+# Set to "0" to disable auto purge feature
+autopurge.purgeInterval={{ zookeeper_auto_purge_interval }}
+
+{% for host in groups['zookeeper_nodes'] %}
+server.{{ hostvars[host].zookeeper_node_id }}={{ host }}:{{ zookeeper_leader_port }}:{{ zookeeper_election_port }}
+{% endfor %}

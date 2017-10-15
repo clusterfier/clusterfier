@@ -11,10 +11,13 @@ apt_packages:
   - name: htop
 
 git_repositories: []
+
 packages_directory: "/opt/packages/"
+system_pid_directory: "/var/run/"
 
 java_version: 8
 java_apt_package: "oracle-java{{ java_version }}-installer"
+java_bin_file_path: "/usr/bin/java"
 webupd8team_apt_key: C2518248EEA14886
 webupd8team_apt_keyserver: "{{ default_apt_keyserver }}"
 webupd8team_java_apt_repo: "deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main"

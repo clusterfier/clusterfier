@@ -7,3 +7,10 @@ cluster-node-3.clusterfier
 cluster-node-4.clusterfier
 cluster-node-5.clusterfier
 
+[zookeeper_nodes]
+cluster-node-1.clusterfier
+cluster-node-2.clusterfier
+cluster-node-3.clusterfier
+cluster-node-4.clusterfier
+cluster-node-5.clusterfier
+
