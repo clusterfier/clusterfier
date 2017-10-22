@@ -1,9 +1,9 @@
-control_machine
+control-machine.clusterfier
 
 [cluster_nodes]
-cluster_node_1
-cluster_node_2
-cluster_node_3
-cluster_node_4
-cluster_node_5
+cluster-node-1.clusterfier
+cluster-node-2.clusterfier
+cluster-node-3.clusterfier
+cluster-node-4.clusterfier
+cluster-node-5.clusterfier
 

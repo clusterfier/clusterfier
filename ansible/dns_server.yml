@@ -1,5 +1,5 @@
 ---
-- hosts: control_machine
+- hosts: control-machine.clusterfier
   roles:
     - dns_server
 

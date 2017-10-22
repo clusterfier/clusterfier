@@ -2,5 +2,5 @@
 {{ attribute }}
 {% endfor %}
 {% for cluster_node in groups['cluster_nodes'] %}
-dhcp-host={{ hostvars[cluster_node]['wlan0_mac_address'] }},{{ hostvars[cluster_node].ansible_ssh_host }}
+dhcp-host={{ hostvars[cluster_node]['wlan0_mac_address'] }},{{ hostvars[cluster_node].ansible_ssh_host }},{{ cluster_node }}
 {% endfor %}

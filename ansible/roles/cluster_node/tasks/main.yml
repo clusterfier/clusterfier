@@ -1,8 +1,8 @@
 ---
-- name: Installing control_machine SSH key
+- name: Installing control machine SSH key
   lineinfile:
     path: "/home/pi/.ssh/authorized_keys"
-    line: "{{ hostvars['control_machine'].ssh_public_key }}"
+    line: "{{ hostvars['control-machine.clusterfier'].ssh_public_key }}"
     create: yes
 
 - name: Templating wpa_supplicant.conf
