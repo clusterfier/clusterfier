@@ -29,17 +29,27 @@ zookeeper_group: "zookeeper"
 zookeeper_user_shell: "/usr/sbin/nologin"
 
 # Clock ticks
+
+# ms; time between client heartbeats. The minimum session
+# time is 2x the tick time.
 zookeeper_tick_time: "2000"
 zookeeper_init_limit: "15"
 zookeeper_sync_limit: "10"
 
 # Communcation
+
 zookeeper_leader_port: "2888"
 zookeeper_election_port: "3888"
+# Port on which to listen for client connections. This port can
+# be a different value on each ZooKeeper server.
 zookeeper_client_port: "2181"
 zookeeper_max_client_connections: "60"
 
 # Snapshots
+
+# Directory where the in-memory state of ZooKeeper is stored.
+# Includes the database snapshots and the database update
+# transaction log.
 zookeeper_data_directory: "/data/zookeeper/"
 zookeeper_snapshot_retain_count: "3"
 zookeeper_auto_purge_interval: "1"
