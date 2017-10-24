@@ -1,0 +1,46 @@
+---
+- hosts: all
+  tasks:
+    - name: Fixing /etc/hosts to include the FQDN
+      become: yes
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '^(127\.0\.1\.1|{{ ansible_ssh_host }})'
+        line: "{{ ansible_ssh_host }}        {{ inventory_hostname }} {{ ansible_hostname }}"
+        state: present
+
+    - name: Remove IPv6 hosts entries
+      become: yes
+      lineinfile:
+        dest: /etc/hosts
+        regexp: "::|IPv6"
+        state: absent
+      when: disable_ipv6
+
+    - name: Disable IPv6 via sysctl
+      become: yes
+      sysctl:
+        name: "net.ipv6.conf.all.disable_ipv6"
+        value: 1
+        state: present
+        reload: yes
+      with_items: sysctl_global_interfaces
+      when: disable_ipv6
+
+    - name: Copying hostname script
+      become: yes
+      copy:
+        src: hostname
+        dest: /etc/dhcp/dhclient-exit-hooks.d/hostname
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restarting networking
+
+  handlers:
+    - name: Restarting networking
+      become: yes
+      service: 
+        name: networking
+        state: restarted
+

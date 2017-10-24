@@ -1,0 +1,17 @@
+#!/bin/sh
+# Filename:     /etc/dhcp/dhclient-exit-hooks.d/hostname
+# Purpose:      Used by dhclient-script to set the hostname
+#               (DHCP Option 12) and domainname (DHCP Option 15) of
+#               the system to match the DNS information for the host
+#               as provided by DHCP.
+#
+
+# If this isn't an operation for which we are assigned an IP, exit.
+if [ "$reason" != BOUND ] && [ "$reason" != RENEW ] && [ "$reason" != REBIND ] && [ "$reason" != REBOOT ]; then
+  exit 0
+fi
+
+# Set the hostname and domainname by normal means.
+echo "$new_host_name" > /etc/hostname
+hostname "$new_host_name"
+domainname "$new_domain_name"
