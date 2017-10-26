@@ -1,0 +1,54 @@
+---
+- hosts: all
+  vars:
+    default_user_home_directory: "{{ default_users_home_parent_directory }}{{ item.name }}"
+    default_user_ssh_key_file: "{{ default_user_home_directory }}/.ssh/id_rsa"
+  tasks:
+    - debug:
+        var: "{{ item }}"
+      with_items: "{{ users }}"
+    - name: Creating groups
+      become: yes
+      group:
+        name: "{{ item.name }}"
+        gid: "{{ item.gid }}"
+        state: "{{ item.state|default('present') }}"
+        system: "{{ item.system|default('no') }}"
+      with_items: "{{ user_groups|default([]) }}"
+
+    - name: Creating users
+      become: yes
+      user:
+        name: "{{ item.name }}"
+        password: "{{ item.password|default() }}"
+        update_password: "{{ item.update_password|default('always') }}"
+        state: "{{ item.state|default('present') }}"
+        shell: "{{ item.shell|default(default_user_shell) }}"
+        home: "{{ item.home|default(default_user_home_directory) }}"
+        move_home: "{{ item.move_home|default('yes') }}"
+        createhome: "{{ item.createhome|default('yes') }}"
+        uid: "{{ item.uid }}"
+        group: "{{ item.group|default(False) }}"
+        groups: "{{ item.groups|default() }}"
+        append: "{{ item.append|default('yes') }}"
+        system: "{{ item.system|default('no') }}"
+        comment: "{{ item.comment|default('') }}"
+        generate_ssh_key: "{{ item.generate_ssh_key|default('no') }}"
+        ssh_key_bits: "{{ ssh_key_bits|default(4096) }}"
+        ssh_key_comment: "{{ ssh_key_comment|default('') }}"
+        ssh_key_file: "{{ ssh_key_file|default(default_user_ssh_key_file) }}"
+        ssh_key_passphrase: "{{ ssh_key_passphrase|default('') }}"
+        ssh_key_type: "{{ ssh_key_type|default('rsa') }}"
+      with_items: "{{ users|default([]) }}"
+
+    - name: Creating sudoers files
+      become: yes
+      copy:
+        content: "{{ item.sudoers_file_content }}"
+        dest: "/etc/sudoers.d/{{ item.name }}"
+        owner: root
+        group: root
+        mode: "0440"
+      with_items: "{{ users|default([]) }}"
+      when: item.sudoers_file_content is defined
+
