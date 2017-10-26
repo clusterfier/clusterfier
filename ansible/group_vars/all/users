@@ -1,0 +1,20 @@
+---
+user_groups:
+  - name: clusterfier
+    gid: 1001
+users:
+  - name: clusterfier
+    #state: absent
+    uid: 1001
+    group: clusterfier
+    groups: sudo
+    comment: "Clusterfier control-machine deployment user"
+    generate_ssh_key: yes
+    ssh_key_bits: 4096
+    sudoers_file_content: |
+      clusterfier ALL=(ALL) NOPASSWD: ALL
+
+default_users_home_parent_directory: "/home/"
+default_user_shell: "/bin/bash"
+default_user_ssh_key_file: "~/.ssh/id_rsa"
+
